@@ -57,6 +57,22 @@
 
       <div class="header-spacer"></div>
 
+      <!-- Admin controls — shown only when admin session is active -->
+      <div id="admin-controls" style="display:none; align-items:center; gap:6px;">
+        <span class="admin-tag">ADMIN</span>
+        <button class="btn btn-sm btn-ghost" id="btn-readonly-toggle" title="Toggle Read Only mode for this pad">
+          🔓 Read Only: OFF
+        </button>
+      </div>
+
+      <!-- Share buttons -->
+      <button class="btn-icon" id="btn-copy-link" title="Copy link to this pad">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3h3v3M9 7l4-4M7 5H4a1 1 0 00-1 1v6a1 1 0 001 1h6a1 1 0 001-1v-3"/></svg>
+      </button>
+      <button class="btn-icon" id="btn-qr-code" title="Show QR code for this pad">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M1 1h6v6H1zm1 1v4h4V2zm1 1h2v2H3zm7-2h6v6h-6zm1 1v4h4V2zm1 1h2v2h-2zM1 9h6v6H1zm1 1v4h4v-4zm1 1h2v2H3zm7 0h2v2h-2zm2 0h2v2h-2zm-2 2h2v2h-2zm2 2h2v2h-2zm-4-4h2v2h-2z"/></svg>
+      </button>
+
       <div class="save-indicator" title="Save status" aria-live="polite">
         <div class="save-dot" id="save-dot"></div>
         <span class="save-label" id="save-label">—</span>
@@ -82,6 +98,10 @@
 
     <!-- ── Notepad Panel ── -->
     <div class="panel active" id="panel-notepad" role="main">
+      <!-- Read Only banner -->
+      <div id="readonly-banner" style="display:none; background:var(--amber-lt); border-bottom:1px solid #FDE68A; padding:9px 16px; font-size:12.5px; font-weight:600; color:#92400E; text-align:center; flex-shrink:0; letter-spacing:0.01em;">
+        🔒 This pad is in <strong>Read Only</strong> mode — viewing and downloading is allowed, editing is disabled.
+      </div>
       <div class="notepad-container">
         <!-- Line gutter -->
         <div class="gutter" aria-hidden="true">

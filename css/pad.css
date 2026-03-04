@@ -668,6 +668,37 @@ body {
 .empty-state .es-title { font-size: 15px; font-weight: 700; color: var(--text2); margin-bottom: 4px; }
 .empty-state .es-desc { font-size: 13px; }
 
+/* ── Admin tag ── */
+.admin-tag {
+  font-size: 9px;
+  font-weight: 800;
+  background: var(--amber-lt);
+  color: #92400E;
+  border: 1px solid #FDE68A;
+  border-radius: 100px;
+  padding: 2px 8px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+/* ── Text link (in file viewer dialogs) ── */
+.text-link {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  transition: color var(--transition);
+}
+
+.text-link:hover { color: var(--accent-h); }
+
+/* ── Read-only mode ── */
+body.readonly-mode #notepad {
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
 /* ── Mobile ── */
 @media (max-width: 640px) {
   .header-top { padding: 8px 12px; gap: 8px; }
