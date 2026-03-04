@@ -1315,6 +1315,38 @@ function detectMediaType(url) {
   return "image";
 }
 
+// Generate a unique gradient from a URL string
+function urlToGradient(url) {
+  // Simple hash
+  let h = 0;
+  for (let i = 0; i < url.length; i++) {
+    h = Math.imul(31, h) + url.charCodeAt(i) | 0;
+  }
+  const abs = Math.abs(h);
+  // Pick two hues spread 60-130 degrees apart
+  const hue1 = abs % 360;
+  const hue2 = (hue1 + 60 + (abs % 70)) % 360;
+  // Angle from hash
+  const angle = (abs >> 4) % 360;
+  // Saturation/lightness kept nice: sat 45-70%, light 32-48%
+  const sat1  = 45 + (abs % 26);
+  const sat2  = 48 + ((abs >> 3) % 22);
+  const lit1  = 32 + ((abs >> 6) % 16);
+  const lit2  = 38 + ((abs >> 9) % 16);
+  return `linear-gradient(${angle}deg, hsl(${hue1},${sat1}%,${lit1}%) 0%, hsl(${hue2},${sat2}%,${lit2}%) 100%)`;
+}
+
+// Get a contrasting accent color (light) from the same hash
+function urlToAccent(url) {
+  let h = 0;
+  for (let i = 0; i < url.length; i++) {
+    h = Math.imul(31, h) + url.charCodeAt(i) | 0;
+  }
+  const abs = Math.abs(h);
+  const hue = (abs + 180) % 360;
+  return `hsl(${hue},90%,80%)`;
+}
+
 function renderGalleryGrid() {
   const items    = Object.entries(currentGallery).sort((a,b) => (b[1].addedAt||0) - (a[1].addedAt||0));
   const count    = items.length;
@@ -1352,12 +1384,18 @@ function renderGalleryGrid() {
           <span>Could not load</span>
         </div>`;
     } else {
-      // Video placeholder
+      // Video placeholder with URL-derived gradient
       const domain = (() => { try { return new URL(item.url).hostname.replace("www.",""); } catch { return "video"; } })();
+      const grad   = urlToGradient(item.url);
+      const accent = urlToAccent(item.url);
       el.innerHTML = `
-        <div class="gallery-video-thumb">
-          <div class="gallery-video-icon">▶️</div>
-          <span>${sanitize(domain)}</span>
+        <div class="gallery-video-thumb" style="background:${grad};">
+          <div class="gallery-video-play" style="color:${accent};">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="currentColor"><circle cx="14" cy="14" r="14" fill="rgba(0,0,0,0.28)"/><polygon points="11,8 22,14 11,20" fill="currentColor"/></svg>
+          </div>
+          <div class="gallery-video-meta">
+            <span class="gallery-video-domain">${sanitize(domain)}</span>
+          </div>
         </div>`;
     }
 
