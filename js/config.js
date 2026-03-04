@@ -4,6 +4,7 @@
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
 import { getDatabase }   from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
+import { getAuth }       from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
 
 // ── Firebase ──
 const firebaseConfig = {
@@ -16,8 +17,9 @@ const firebaseConfig = {
   appId            : "1:758190119913:web:a9cdfcc2b7876f27b44978"
 };
 
-export const app = initializeApp(firebaseConfig);
-export const db  = getDatabase(app);
+export const app  = initializeApp(firebaseConfig);
+export const db   = getDatabase(app);
+export const auth = getAuth(app);
 
 // ── Constants ──
 export const WORKER_URL   = "https://texofilo.antornslm.workers.dev/";

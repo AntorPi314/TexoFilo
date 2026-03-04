@@ -8,425 +8,209 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2318181B'/%3E%3Ctext x='5' y='22' font-family='Georgia,serif' font-weight='900' font-size='16' fill='%23FFFFFF'%3ETx%3C/text%3E%3Ccircle cx='27' cy='9' r='3.5' fill='%235548E0'/%3E%3C/svg%3E" />
   <link rel="stylesheet" href="css/shared.css" />
   <style>
-    body {
-      min-height: 100vh;
-      background: var(--bg);
-      display: flex;
-      flex-direction: column;
-    }
+    body { min-height:100vh; background:var(--bg); display:flex; flex-direction:column; }
 
     /* ── Top bar ── */
     .admin-topbar {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 0 24px;
-      height: 54px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      background:var(--surface); border-bottom:1px solid var(--border);
+      padding:0 24px; height:54px; display:flex; align-items:center;
+      justify-content:space-between; gap:12px; position:sticky; top:0; z-index:100;
     }
-
-    .admin-brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .admin-logo {
-      font-family: var(--ff-brand);
-      font-size: 20px;
-      font-weight: 900;
-      color: var(--text);
-      text-decoration: none;
-    }
-
+    .admin-brand { display:flex; align-items:center; gap:10px; }
+    .admin-logo  { font-family:var(--ff-brand); font-size:20px; font-weight:900; color:var(--text); text-decoration:none; }
     .admin-badge {
-      font-size: 10px;
-      font-weight: 700;
-      background: #FEF3C7;
-      color: #92400E;
-      border: 1px solid #FDE68A;
-      border-radius: 100px;
-      padding: 2px 9px;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
+      font-size:10px; font-weight:700; background:#FEF3C7; color:#92400E;
+      border:1px solid #FDE68A; border-radius:100px; padding:2px 9px;
+      letter-spacing:0.07em; text-transform:uppercase;
     }
-
     .admin-logout {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      color: var(--muted);
-      cursor: pointer;
-      padding: 6px 12px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      background: none;
-      transition: all var(--transition);
+      display:flex; align-items:center; gap:6px; font-size:13px; color:var(--muted);
+      cursor:pointer; padding:6px 12px; border-radius:var(--radius-sm);
+      border:1px solid var(--border); background:none; transition:all var(--transition);
     }
+    .admin-logout:hover { color:var(--red); border-color:#FECACA; background:var(--red-lt); }
 
-    .admin-logout:hover { color: var(--red); border-color: #FECACA; background: var(--red-lt); }
-
-    /* ── Main layout ── */
+    /* ── Main ── */
     main {
-      flex: 1;
-      max-width: 720px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 32px 24px 80px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+      flex:1; max-width:740px; width:100%; margin:0 auto;
+      padding:32px 24px 80px; display:flex; flex-direction:column; gap:12px;
     }
 
-    .page-title {
-      font-family: var(--ff-brand);
-      font-size: 28px;
-      font-weight: 900;
-      color: var(--text);
-      margin-bottom: 2px;
+    .page-title { font-family:var(--ff-brand); font-size:28px; font-weight:900; color:var(--text); margin-bottom:2px; }
+    .page-sub   { font-size:14px; color:var(--muted); }
+
+    /* ── Section divider ── */
+    .section-head {
+      display:flex; align-items:center; gap:10px;
+      padding:14px 0 6px;
+      margin-top:8px;
+    }
+    .section-head-icon {
+      width:32px; height:32px; border-radius:var(--radius-sm);
+      display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;
+    }
+    .section-head-icon.blue   { background:var(--accent-lt); }
+    .section-head-icon.amber  { background:var(--amber-lt); }
+    .section-head-title { font-size:17px; font-weight:800; color:var(--text); }
+    .section-head-sub   { font-size:12px; color:var(--muted); margin-top:1px; }
+    .section-divider {
+      flex:1; height:1px; background:var(--border);
     }
 
-    .page-sub { font-size: 14px; color: var(--muted); }
-
-    /* ── Card ── */
+    /* ── Cards ── */
     .card {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius-xl);
-      overflow: hidden;
+      background:var(--surface); border:1.5px solid var(--border);
+      border-radius:var(--radius-xl); overflow:hidden;
     }
-
     .card-header {
-      padding: 18px 22px 14px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      padding:16px 20px 12px; border-bottom:1px solid var(--border);
+      display:flex; align-items:center; gap:12px;
     }
-
-    .card-icon {
-      width: 38px; height: 38px;
-      border-radius: var(--radius);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
-
-    .card-icon.purple { background: var(--accent-lt); }
-    .card-icon.red    { background: var(--red-lt); }
-    .card-icon.amber  { background: var(--amber-lt); }
-
-    .card-title { font-size: 15px; font-weight: 700; color: var(--text); }
-    .card-desc  { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
-
-    .card-body { padding: 20px 22px; display: flex; flex-direction: column; gap: 18px; }
+    .card-icon { width:36px; height:36px; border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; font-size:17px; flex-shrink:0; }
+    .card-icon.purple { background:var(--accent-lt); }
+    .card-icon.red    { background:var(--red-lt); }
+    .card-icon.amber  { background:var(--amber-lt); }
+    .card-icon.green  { background:var(--green-lt); }
+    .card-title { font-size:14px; font-weight:700; color:var(--text); }
+    .card-desc  { font-size:12px; color:var(--muted); margin-top:2px; }
+    .card-body  { padding:18px 20px; display:flex; flex-direction:column; gap:16px; }
 
     /* ── Setting row ── */
-    .setting-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .setting-info { flex: 1; min-width: 180px; }
-    .setting-label { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
-    .setting-hint  { font-size: 12px; color: var(--muted); }
-
-    .setting-control { flex-shrink: 0; }
+    .setting-row { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+    .setting-info { flex:1; min-width:160px; }
+    .setting-label { font-size:13.5px; font-weight:600; color:var(--text); margin-bottom:2px; }
+    .setting-hint  { font-size:11.5px; color:var(--muted); }
+    .setting-control { flex-shrink:0; }
 
     .number-input-wrap {
-      display: flex;
-      align-items: center;
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      background: var(--surface);
-      transition: border-color var(--transition);
+      display:flex; align-items:center; border:1.5px solid var(--border);
+      border-radius:var(--radius); overflow:hidden; background:var(--surface);
+      transition:border-color var(--transition);
     }
-
-    .number-input-wrap:focus-within { border-color: var(--accent); }
-
+    .number-input-wrap:focus-within { border-color:var(--accent); }
     .num-btn {
-      width: 36px; height: 36px;
-      border: none;
-      background: var(--surface2);
-      color: var(--text2);
-      font-size: 18px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background var(--transition);
-      flex-shrink: 0;
+      width:34px; height:34px; border:none; background:var(--surface2); color:var(--text2);
+      font-size:17px; font-weight:600; cursor:pointer; display:flex;
+      align-items:center; justify-content:center; transition:background var(--transition); flex-shrink:0;
     }
-
-    .num-btn:hover { background: var(--surface3); }
-
+    .num-btn:hover { background:var(--surface3); }
     .num-input {
-      width: 64px;
-      text-align: center;
-      border: none;
-      outline: none;
-      font-family: var(--ff-mono);
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--accent);
-      background: transparent;
-      padding: 0 6px;
+      width:60px; text-align:center; border:none; outline:none;
+      font-family:var(--ff-mono); font-size:13px; font-weight:700;
+      color:var(--accent); background:transparent; padding:0 4px;
     }
-
-    /* Remove spinner arrows */
     .num-input::-webkit-inner-spin-button,
-    .num-input::-webkit-outer-spin-button { -webkit-appearance: none; }
-    .num-input[type=number] { -moz-appearance: textfield; }
+    .num-input::-webkit-outer-spin-button { -webkit-appearance:none; }
+    .num-input[type=number] { -moz-appearance:textfield; }
 
-    .save-settings-btn {
-      width: 100%;
-      padding: 12px;
-      border-radius: var(--radius);
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      font-family: var(--ff-ui);
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+    .save-btn {
+      width:100%; padding:11px; border-radius:var(--radius);
+      background:var(--accent); color:#fff; border:none;
+      font-family:var(--ff-ui); font-size:13.5px; font-weight:700; cursor:pointer;
+      transition:all var(--transition); display:flex; align-items:center; justify-content:center; gap:7px;
     }
+    .save-btn:hover { background:var(--accent-h); box-shadow:0 3px 10px rgba(85,72,224,0.28); }
 
-    .save-settings-btn:hover { background: var(--accent-h); box-shadow: 0 3px 10px rgba(85,72,224,0.3); }
-
-    /* ── Danger actions ── */
-    .danger-actions { display: flex; flex-direction: column; gap: 10px; }
-
-    .danger-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 14px 16px;
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--surface2);
-      flex-wrap: wrap;
-    }
-
-    .danger-item-info { flex: 1; min-width: 180px; }
-    .danger-item-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
-    .danger-item-desc  { font-size: 12px; color: var(--muted); }
-
-    /* ── Stats ── */
+    /* ── Stats grid ── */
     .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 12px;
-      padding: 20px 22px;
+      display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));
+      gap:10px; padding:16px 20px;
+    }
+    .stat-tile { background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; text-align:center; }
+    .stat-num  { font-family:var(--ff-brand); font-size:26px; font-weight:900; color:var(--accent); line-height:1.1; }
+    .stat-lbl  { font-size:11px; color:var(--muted); margin-top:3px; font-weight:500; }
+
+    /* ── Danger items ── */
+    .danger-actions { display:flex; flex-direction:column; gap:8px; }
+    .danger-item {
+      display:flex; align-items:center; justify-content:space-between; gap:14px;
+      padding:12px 14px; border:1.5px solid var(--border);
+      border-radius:var(--radius); background:var(--surface2); flex-wrap:wrap;
+    }
+    .danger-item-info { flex:1; min-width:160px; }
+    .danger-item-title { font-size:13.5px; font-weight:600; color:var(--text); margin-bottom:2px; }
+    .danger-item-desc  { font-size:11.5px; color:var(--muted); }
+
+    /* ── Admin section wrapper ── */
+    .admin-section {
+      border:2px solid #FDE68A; border-radius:var(--radius-xl);
+      background:#FFFBEB; padding:18px; display:flex; flex-direction:column; gap:12px;
+    }
+    .admin-section-label {
+      display:flex; align-items:center; gap:6px;
+      font-size:10px; font-weight:800; color:#92400E;
+      text-transform:uppercase; letter-spacing:0.12em;
+    }
+    .admin-section .card { border-width:1.5px; }
+    .admin-section .save-btn { background:#D97706; }
+    .admin-section .save-btn:hover { background:#B45309; box-shadow:0 3px 10px rgba(217,119,6,0.28); }
+    .admin-section .num-input { color:#D97706; }
+
+    /* ── Unlimited badge ── */
+    .unlimited-badge {
+      display:inline-flex; align-items:center; gap:4px;
+      font-size:11px; font-weight:700; color:#16A34A;
+      background:var(--green-lt); border:1px solid #BBF7D0;
+      border-radius:100px; padding:3px 10px;
     }
 
-    .stat-tile {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 14px 16px;
-      text-align: center;
-    }
-
-    .stat-num {
-      font-family: var(--ff-brand);
-      font-size: 28px;
-      font-weight: 900;
-      color: var(--accent);
-      line-height: 1.1;
-    }
-
-    .stat-lbl { font-size: 11px; color: var(--muted); margin-top: 3px; font-weight: 500; }
-
-    /* ── Status dot ── */
-    .status-ok  { color: var(--green); }
-    .status-err { color: var(--red); }
-
-    /* ─────────────────
-       LOGIN SCREEN
-    ───────────────── */
+    /* ── Login screen ── */
     #login-screen {
-      position: fixed;
-      inset: 0;
-      background: var(--bg);
-      z-index: 9000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
+      position:fixed; inset:0; background:var(--bg); z-index:9000;
+      display:flex; align-items:center; justify-content:center; padding:24px;
     }
-
     .login-card {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 40px 36px;
-      width: 100%;
-      max-width: 380px;
-      box-shadow: var(--shadow-lg);
-      text-align: center;
-      animation: fadeUp 0.4s cubic-bezier(0.34,1.2,0.64,1) both;
+      background:var(--surface); border:1.5px solid var(--border);
+      border-radius:var(--radius-xl); padding:40px 36px; width:100%; max-width:380px;
+      box-shadow:var(--shadow-lg); text-align:center;
+      animation:fadeUp 0.4s cubic-bezier(0.34,1.2,0.64,1) both;
     }
-
-    .login-logo {
-      font-family: var(--ff-brand);
-      font-size: 32px;
-      font-weight: 900;
-      color: var(--text);
-      margin-bottom: 4px;
-    }
-
-    .login-sub {
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 28px;
-    }
-
+    .login-logo { font-family:var(--ff-brand); font-size:32px; font-weight:900; color:var(--text); margin-bottom:4px; }
+    .login-sub  { font-size:13px; color:var(--muted); margin-bottom:28px; }
     .login-input {
-      width: 100%;
-      padding: 13px 16px;
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
-      font-family: var(--ff-mono);
-      font-size: 14px;
-      color: var(--text);
-      background: var(--surface2);
-      outline: none;
-      text-align: center;
-      letter-spacing: 0.08em;
-      transition: border-color var(--transition), box-shadow var(--transition);
-      margin-bottom: 12px;
+      width:100%; padding:13px 16px; border:1.5px solid var(--border);
+      border-radius:var(--radius); font-family:var(--ff-mono); font-size:14px;
+      color:var(--text); background:var(--surface2); outline:none;
+      text-align:center; letter-spacing:0.08em; margin-bottom:12px;
+      transition:border-color var(--transition), box-shadow var(--transition);
     }
-
-    .login-input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(85,72,224,0.12);
-      background: var(--surface);
-    }
-
-    .login-input.error {
-      border-color: var(--red);
-      box-shadow: 0 0 0 3px rgba(220,38,38,0.1);
-      animation: shake 0.35s ease;
-    }
-
-    @keyframes shake {
-      0%,100%{transform:translateX(0)}
-      20%{transform:translateX(-6px)}
-      40%{transform:translateX(6px)}
-      60%{transform:translateX(-4px)}
-      80%{transform:translateX(4px)}
-    }
-
+    .login-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(85,72,224,0.12); background:var(--surface); }
+    .login-input.error { border-color:var(--red); box-shadow:0 0 0 3px rgba(220,38,38,0.1); animation:shake 0.35s ease; }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
     .login-btn {
-      width: 100%;
-      padding: 13px;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius);
-      font-family: var(--ff-ui);
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all var(--transition);
+      width:100%; padding:13px; background:var(--accent); color:#fff; border:none;
+      border-radius:var(--radius); font-family:var(--ff-ui); font-size:14px;
+      font-weight:700; cursor:pointer; transition:all var(--transition);
     }
+    .login-btn:hover { background:var(--accent-h); box-shadow:0 3px 10px rgba(85,72,224,0.3); }
+    .login-err { font-size:12px; color:var(--red); margin-top:8px; min-height:18px; }
 
-    .login-btn:hover { background: var(--accent-h); box-shadow: 0 3px 10px rgba(85,72,224,0.3); }
-
-    .login-err {
-      font-size: 12px;
-      color: var(--red);
-      margin-top: 8px;
-      min-height: 18px;
-    }
-
-
-    /* ── Admin Zone (bottom section) ── */
-    .admin-zone {
-      border: 2px solid #FDE68A;
-      border-radius: var(--radius-xl);
-      padding: 20px;
-      background: #FFFBEB;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .admin-zone-label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      font-weight: 800;
-      color: #92400E;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-    }
-
-    .admin-zone .card {
-      border-width: 1.5px;
-    }
-
-        /* ── Confirm dialog ── */
+    /* ── Confirm dialog ── */
     .confirm-dialog {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(24,24,27,0.4);
-      backdrop-filter: blur(6px);
-      z-index: 2000;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      animation: fadeIn 0.18s ease both;
+      display:none; position:fixed; inset:0; background:rgba(24,24,27,0.4);
+      backdrop-filter:blur(6px); z-index:2000; align-items:center;
+      justify-content:center; padding:16px; animation:fadeIn 0.18s ease both;
     }
-
-    .confirm-dialog.show { display: flex; }
-
+    .confirm-dialog.show { display:flex; }
     .confirm-box {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 32px 28px;
-      max-width: 380px;
-      width: 100%;
-      text-align: center;
-      box-shadow: var(--shadow-lg);
-      animation: dialogIn 0.22s cubic-bezier(0.34,1.2,0.64,1) both;
+      background:var(--surface); border:1.5px solid var(--border);
+      border-radius:var(--radius-xl); padding:32px 28px; max-width:380px; width:100%;
+      text-align:center; box-shadow:var(--shadow-lg);
+      animation:dialogIn 0.22s cubic-bezier(0.34,1.2,0.64,1) both;
     }
+    .confirm-icon  { font-size:40px; margin-bottom:12px; }
+    .confirm-title { font-size:18px; font-weight:700; color:var(--text); margin-bottom:8px; }
+    .confirm-desc  { font-size:13px; color:var(--muted); line-height:1.6; margin-bottom:24px; }
+    .confirm-btns  { display:flex; gap:10px; justify-content:center; }
 
-    .confirm-icon { font-size: 40px; margin-bottom: 12px; }
-    .confirm-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
-    .confirm-desc  { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
-
-    .confirm-btns { display: flex; gap: 10px; justify-content: center; }
-
-    @media (max-width: 600px) {
-      main { padding: 20px 14px 60px; }
-      .card-body { padding: 16px; }
-      .card-header { padding: 14px 16px; }
-      .login-card { padding: 28px 20px; }
-      .setting-row { flex-direction: column; align-items: flex-start; }
-      .stats-grid { padding: 14px; }
+    @media (max-width:600px) {
+      main { padding:16px 12px 60px; }
+      .card-body { padding:14px; }
+      .card-header { padding:12px 14px; }
+      .login-card { padding:28px 20px; }
+      .setting-row { flex-direction:column; align-items:flex-start; }
+      .stats-grid { padding:12px; }
+      .admin-section { padding:14px; }
     }
   </style>
 </head>
@@ -437,22 +221,15 @@
     <div class="login-card">
       <div class="login-logo">Texofilo</div>
       <div class="login-sub">Admin Panel — Enter password to continue</div>
-      <input
-        type="password"
-        id="pw-input"
-        class="login-input"
-        placeholder="••••••••••••"
-        autocomplete="current-password"
-      />
+      <input type="password" id="pw-input" class="login-input" placeholder="••••••••••••" autocomplete="current-password" />
       <button class="login-btn" id="pw-btn">Unlock Admin →</button>
       <div class="login-err" id="pw-err"></div>
     </div>
   </div>
 
-  <!-- ── Admin UI (hidden until auth) ── -->
+  <!-- ── Admin UI ── -->
   <div id="admin-ui" style="display:none; flex-direction:column; min-height:100vh;">
 
-    <!-- Top bar -->
     <div class="admin-topbar">
       <div class="admin-brand">
         <a href="index.html" class="admin-logo">Texofilo</a>
@@ -465,27 +242,56 @@
     </div>
 
     <main>
-      <!-- Page heading -->
       <div>
         <div class="page-title">Admin Panel</div>
-        <div class="page-sub">Configure global settings for all pads</div>
+        <div class="page-sub">Manage settings for normal users and admin separately</div>
       </div>
 
-      <!-- Settings card — primary action at top -->
+      <!-- ══════════════════════════════
+           NORMAL USER SECTION
+      ══════════════════════════════ -->
+      <div class="section-head">
+        <div class="section-head-icon blue">👤</div>
+        <div>
+          <div class="section-head-title">Normal Users</div>
+          <div class="section-head-sub">Settings and stats for regular visitors</div>
+        </div>
+        <div class="section-divider"></div>
+      </div>
+
+      <!-- Normal Overview -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon amber">📊</div>
+          <div>
+            <div class="card-title">Overview</div>
+            <div class="card-desc">Live usage stats from Firebase</div>
+          </div>
+        </div>
+        <div class="stats-grid" id="normal-stats-grid">
+          <div class="stat-tile"><div class="stat-num" id="stat-pads">—</div><div class="stat-lbl">Total Pads</div></div>
+          <div class="stat-tile"><div class="stat-num" id="stat-files">—</div><div class="stat-lbl">User Files</div></div>
+          <div class="stat-tile"><div class="stat-num" id="stat-notes">—</div><div class="stat-lbl">Notes Written</div></div>
+          <div class="stat-tile"><div class="stat-num" id="stat-storage">—</div><div class="stat-lbl">User Storage</div></div>
+          <div class="stat-tile"><div class="stat-num" id="stat-limit">—</div><div class="stat-lbl">File Limit/Pad</div></div>
+          <div class="stat-tile"><div class="stat-num" id="stat-expiry">—</div><div class="stat-lbl">File Expiry</div></div>
+        </div>
+      </div>
+
+      <!-- Normal Global Settings -->
       <div class="card">
         <div class="card-header">
           <div class="card-icon purple">⚙️</div>
           <div>
             <div class="card-title">Global Settings</div>
-            <div class="card-desc">These apply across all pads sitewide</div>
+            <div class="card-desc">Limits that apply to all normal users sitewide</div>
           </div>
         </div>
         <div class="card-body">
-
           <div class="setting-row">
             <div class="setting-info">
               <div class="setting-label">Max files per pad</div>
-              <div class="setting-hint">How many files each pad can hold at once</div>
+              <div class="setting-hint">How many files a user can upload per pad</div>
             </div>
             <div class="setting-control">
               <div class="number-input-wrap">
@@ -495,7 +301,6 @@
               </div>
             </div>
           </div>
-
           <div class="setting-row">
             <div class="setting-info">
               <div class="setting-label">Max file size (MB)</div>
@@ -509,11 +314,10 @@
               </div>
             </div>
           </div>
-
           <div class="setting-row">
             <div class="setting-info">
               <div class="setting-label">File expiry (days)</div>
-              <div class="setting-hint">How many days before uploaded files are auto-deleted</div>
+              <div class="setting-hint">Days before user files are auto-deleted</div>
             </div>
             <div class="setting-control">
               <div class="number-input-wrap">
@@ -523,100 +327,147 @@
               </div>
             </div>
           </div>
-
-          <button class="save-settings-btn" id="save-settings-btn">
-            <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h9l3 3v9H2zm4 9h4v3H6zm2-8a2 2 0 100 4 2 2 0 000-4z"/></svg>
-            Save Settings
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Max notepad size (KB)</div>
+              <div class="setting-hint">Maximum text size per notepad — default 10 KB</div>
+            </div>
+            <div class="setting-control">
+              <div class="number-input-wrap">
+                <button class="num-btn" data-target="note-size" data-dir="-1">−</button>
+                <input type="number" class="num-input" id="note-size" value="10" min="1" max="9999" />
+                <button class="num-btn" data-target="note-size" data-dir="1">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <div class="setting-label">Max gallery links</div>
+              <div class="setting-hint">Maximum image/video links per pad's gallery — default 20</div>
+            </div>
+            <div class="setting-control">
+              <div class="number-input-wrap">
+                <button class="num-btn" data-target="gallery-limit" data-dir="-1">−</button>
+                <input type="number" class="num-input" id="gallery-limit" value="20" min="1" max="9999" />
+                <button class="num-btn" data-target="gallery-limit" data-dir="1">+</button>
+              </div>
+            </div>
+          </div>
+          <button class="save-btn" id="save-user-settings-btn">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h9l3 3v9H2zm4 9h4v3H6zm2-8a2 2 0 100 4 2 2 0 000-4z"/></svg>
+            Save User Settings
           </button>
-
         </div>
       </div>
 
-      <!-- ── Admin Zone: Overview + Danger ── -->
-      <div class="admin-zone">
-        <div class="admin-zone-label">
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" style="opacity:.7;flex-shrink:0;"><path d="M8 1l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 10.8l-3.8 2 .7-4.3-3.1-3 4.3-.6z"/></svg>
-          Admin Zone
+      <!-- Normal Danger Zone -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon red">⚠️</div>
+          <div>
+            <div class="card-title">Danger Zone</div>
+            <div class="card-desc">Destructive actions affecting normal users</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="danger-actions">
+            <div class="danger-item">
+              <div class="danger-item-info">
+                <div class="danger-item-title">Delete All User Files</div>
+                <div class="danger-item-desc">Removes all file records from every pad in Firebase (Cloudinary data stays)</div>
+              </div>
+              <button class="btn btn-danger btn-sm" id="del-all-files-btn">Delete All Files</button>
+            </div>
+            <div class="danger-item">
+              <div class="danger-item-info">
+                <div class="danger-item-title">Delete All Notes</div>
+                <div class="danger-item-desc">Permanently wipes every notepad's content across all pads</div>
+              </div>
+              <button class="btn btn-danger btn-sm" id="del-all-notes-btn">Delete All Notes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ══════════════════════════════
+           ADMIN SECTION
+      ══════════════════════════════ -->
+      <div class="admin-section">
+        <div class="admin-section-label">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 10.8l-3.8 2 .7-4.3-3.1-3 4.3-.6z"/></svg>
+          Admin Only
         </div>
 
-        <!-- Overview card -->
+        <div class="section-head" style="padding:0 0 4px; margin:0;">
+          <div class="section-head-icon amber">🛡️</div>
+          <div>
+            <div class="section-head-title">Admin</div>
+            <div class="section-head-sub">Admin uploads, overrides and full control</div>
+          </div>
+        </div>
+
+        <!-- Admin Overview -->
         <div class="card" style="border-color:#FDE68A;">
           <div class="card-header">
             <div class="card-icon amber">📊</div>
             <div>
               <div class="card-title">Overview</div>
-              <div class="card-desc">Live stats from Firebase</div>
+              <div class="card-desc">Admin-specific storage and activity</div>
             </div>
           </div>
-          <div class="stats-grid" id="stats-grid">
-            <div class="stat-tile">
-              <div class="stat-num" id="stat-pads">—</div>
-              <div class="stat-lbl">Total Pads</div>
-            </div>
-            <div class="stat-tile">
-              <div class="stat-num" id="stat-files">—</div>
-              <div class="stat-lbl">Total Files</div>
-            </div>
-            <div class="stat-tile">
-              <div class="stat-num" id="stat-notes">—</div>
-              <div class="stat-lbl">Notes Written</div>
-            </div>
-            <div class="stat-tile">
-              <div class="stat-num" id="stat-storage">—</div>
-              <div class="stat-lbl">Total Storage</div>
-            </div>
-            <div class="stat-tile">
-              <div class="stat-num" id="stat-limit">9999</div>
-              <div class="stat-lbl">File Limit / Pad</div>
-            </div>
-            <div class="stat-tile">
-              <div class="stat-num" id="stat-expiry">9999d</div>
-              <div class="stat-lbl">File Expiry</div>
-            </div>
+          <div class="stats-grid">
+            <div class="stat-tile"><div class="stat-num" id="stat-admin-files">—</div><div class="stat-lbl">Admin Files</div></div>
+            <div class="stat-tile"><div class="stat-num" id="stat-admin-storage">—</div><div class="stat-lbl">Admin Storage</div></div>
+            <div class="stat-tile"><div class="stat-num" id="stat-readonly-pads">—</div><div class="stat-lbl">Read-Only Pads</div></div>
+            <div class="stat-tile"><div class="stat-num" id="stat-total-pads-admin">—</div><div class="stat-lbl">Total Pads</div></div>
           </div>
         </div>
 
-        <!-- Danger zone card -->
+        <!-- Admin Danger Zone -->
         <div class="card" style="border-color:#FECACA;">
           <div class="card-header">
-            <div class="card-icon red">⚠️</div>
+            <div class="card-icon red">💥</div>
             <div>
               <div class="card-title">Danger Zone</div>
-              <div class="card-desc">Irreversible actions — double confirm required</div>
+              <div class="card-desc">Nuclear options — complete data destruction</div>
             </div>
           </div>
           <div class="card-body">
             <div class="danger-actions">
-
-              <div class="danger-item">
+              <div class="danger-item" style="border-color:#FECACA; background:var(--red-lt);">
                 <div class="danger-item-info">
-                  <div class="danger-item-title">Delete All Files</div>
-                  <div class="danger-item-desc">Removes every uploaded file record from all pads in Firebase (does not delete from Cloudinary)</div>
+                  <div class="danger-item-title">Delete All Admin Files</div>
+                  <div class="danger-item-desc">Removes all files uploaded by admin from every pad in Firebase</div>
                 </div>
-                <button class="btn btn-danger btn-sm" id="del-all-files-btn">Delete All Files</button>
+                <button class="btn btn-danger btn-sm" id="del-admin-files-btn">Delete Admin Files</button>
               </div>
-
-              <div class="danger-item">
+              <div class="danger-item" style="border-color:#FECACA; background:var(--red-lt);">
                 <div class="danger-item-info">
-                  <div class="danger-item-title">Delete All Notes</div>
-                  <div class="danger-item-desc">Wipes all notepad content from every pad permanently</div>
+                  <div class="danger-item-title">Delete All Admin Notes</div>
+                  <div class="danger-item-desc">Wipes notepad content from all pads that were written by admin</div>
                 </div>
-                <button class="btn btn-danger btn-sm" id="del-all-notes-btn">Delete All Notes</button>
+                <button class="btn btn-danger btn-sm" id="del-admin-notes-btn">Delete Admin Notes</button>
               </div>
-
-              <div class="danger-item">
+              <div class="danger-item" style="border-color:#FECACA; background:var(--red-lt);">
                 <div class="danger-item-info">
-                  <div class="danger-item-title">Wipe Everything</div>
-                  <div class="danger-item-desc">Deletes all pads, notes and file records. Complete reset.</div>
+                  <div class="danger-item-title">Wipe ALL Data</div>
+                  <div class="danger-item-desc">Deletes every pad, note, file record and setting. Complete factory reset. Cannot be undone.</div>
                 </div>
-                <button class="btn btn-danger btn-sm" id="del-all-btn">Wipe All Data</button>
+                <button class="btn btn-danger btn-sm" id="del-all-btn">Wipe Everything</button>
               </div>
-
+              <div class="danger-item" style="border-color:#FECACA; background:var(--red-lt);">
+                <div class="danger-item-info">
+                  <div class="danger-item-title">Delete Admin Settings</div>
+                  <div class="danger-item-desc">Resets all admin/settings in Firebase back to defaults</div>
+                </div>
+                <button class="btn btn-danger btn-sm" id="del-admin-settings-btn">Reset Settings</button>
+              </div>
             </div>
           </div>
         </div>
 
-      </div><!-- /admin-zone -->
+      </div><!-- /admin-section -->
 
     </main>
   </div>
@@ -639,9 +490,7 @@
   <script type="module">
     import { db } from "./js/config.js";
     import { showToast } from "./js/config.js";
-    import {
-      ref, get, remove, set, onValue
-    } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
+    import { ref, get, remove, set, onValue } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
 
     const WORKER_URL  = "https://texofilo.antornslm.workers.dev";
     const SESSION_KEY = "txf_admin_auth";
@@ -660,7 +509,7 @@
       loadStats();
     }
 
-    if (sessionStorage.getItem(SESSION_KEY) === "1") unlockUI();
+    if (localStorage.getItem(SESSION_KEY) === "1") unlockUI();
 
     pwBtn.addEventListener("click", checkPassword);
     pwInput.addEventListener("keydown", e => { if (e.key === "Enter") checkPassword(); });
@@ -668,110 +517,88 @@
     async function checkPassword() {
       const val = pwInput.value.trim();
       if (!val) return;
-
-      pwBtn.disabled    = true;
+      pwBtn.disabled = true;
       pwBtn.textContent = "Verifying…";
       pwErr.textContent = "";
-
       try {
         const res  = await fetch(`${WORKER_URL}/admin/auth`, {
-          method : "POST",
-          headers: { "Content-Type": "application/json" },
-          body   : JSON.stringify({ password: val }),
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: val }),
         });
         const data = await res.json();
-
         if (data.ok && data.token) {
-          sessionStorage.setItem(SESSION_KEY, "1");
-          sessionStorage.setItem(TOKEN_KEY, data.token); // store token for save calls
+          localStorage.setItem(SESSION_KEY, "1");
+          localStorage.setItem(TOKEN_KEY, data.token);
           unlockUI();
         } else {
           throw new Error(data.error || "Wrong password");
         }
       } catch (e) {
         pwInput.classList.add("error");
-        pwErr.textContent = e.message.includes("Wrong")
-          ? "Incorrect password. Try again."
-          : "Connection error. Check your internet.";
+        pwErr.textContent = e.message.includes("Wrong") ? "Incorrect password. Try again." : "Connection error.";
         pwInput.value = "";
         pwInput.focus();
         setTimeout(() => pwInput.classList.remove("error"), 600);
       } finally {
-        pwBtn.disabled    = false;
+        pwBtn.disabled = false;
         pwBtn.textContent = "Unlock Admin →";
       }
     }
 
     document.getElementById("logout-btn").addEventListener("click", () => {
-      sessionStorage.removeItem(SESSION_KEY);
-      sessionStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(SESSION_KEY);
+      localStorage.removeItem(TOKEN_KEY);
       location.reload();
     });
 
-    // ── Settings — READ from Firebase directly (public read), WRITE via Worker ──
-    const SETTINGS_REF = ref(db, "admin/settings");
-
+    // ── Load Settings ──
     async function loadSettings() {
       try {
-        const snap = await get(SETTINGS_REF);
+        const snap = await get(ref(db, "admin/settings"));
         if (snap.exists()) {
           const s = snap.val();
-          if (s.maxFiles)      document.getElementById("file-limit").value  = s.maxFiles;
-          if (s.maxFileSizeMB) document.getElementById("file-size").value   = s.maxFileSizeMB;
-          if (s.expireDays)    document.getElementById("file-expiry").value = s.expireDays;
+          if (s.maxFiles)       document.getElementById("file-limit").value  = s.maxFiles;
+          if (s.maxFileSizeMB)  document.getElementById("file-size").value   = s.maxFileSizeMB;
+          if (s.expireDays)     document.getElementById("file-expiry").value = s.expireDays;
+          if (s.maxNotepadKB)     document.getElementById("note-size").value     = s.maxNotepadKB;
+          if (s.maxGalleryLinks)  document.getElementById("gallery-limit").value  = s.maxGalleryLinks;
         }
-      } catch (e) {
-        showToast("Could not load settings", "error");
-      }
+      } catch { showToast("Could not load settings", "error"); }
     }
 
-    document.getElementById("save-settings-btn").addEventListener("click", async () => {
-      const token = sessionStorage.getItem(TOKEN_KEY);
-      if (!token) {
-        showToast("Session expired — please log in again", "error");
-        sessionStorage.removeItem(SESSION_KEY);
-        location.reload();
-        return;
-      }
+    // ── Save User Settings ──
+    document.getElementById("save-user-settings-btn").addEventListener("click", async () => {
+      const token = localStorage.getItem(TOKEN_KEY);
+      if (!token) { showToast("Session expired", "error"); localStorage.removeItem(SESSION_KEY); location.reload(); return; }
 
-      const maxFiles      = parseInt(document.getElementById("file-limit").value)  || 5;
-      const maxFileSizeMB = parseInt(document.getElementById("file-size").value)   || 100;
-      const expireDays    = parseInt(document.getElementById("file-expiry").value) || 30;
+      const maxFiles      = parseInt(document.getElementById("file-limit").value)  || 9999;
+      const maxFileSizeMB = parseInt(document.getElementById("file-size").value)   || 9999;
+      const expireDays    = parseInt(document.getElementById("file-expiry").value) || 9999;
+      const maxNotepadKB    = parseInt(document.getElementById("note-size").value)     || 10;
+      const maxGalleryLinks = parseInt(document.getElementById("gallery-limit").value) || 20;
 
-      const btn = document.getElementById("save-settings-btn");
-      btn.disabled    = true;
-      btn.textContent = "Saving…";
+      const btn = document.getElementById("save-user-settings-btn");
+      btn.disabled = true; btn.textContent = "Saving…";
 
       try {
-        // Settings written through Worker — client CANNOT write to admin/settings directly
         const res  = await fetch(`${WORKER_URL}/admin/save`, {
-          method : "POST",
-          headers: { "Content-Type": "application/json" },
-          body   : JSON.stringify({ token, settings: { maxFiles, maxFileSizeMB, expireDays } }),
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token, settings: { maxFiles, maxFileSizeMB, expireDays, maxNotepadKB, maxGalleryLinks } }),
         });
         const data = await res.json();
-
         if (!data.ok) {
-          if (res.status === 401) {
-            showToast("Session expired — please log in again", "error");
-            sessionStorage.removeItem(SESSION_KEY);
-            sessionStorage.removeItem(TOKEN_KEY);
-            setTimeout(() => location.reload(), 1800);
-          }
+          if (res.status === 401) { showToast("Session expired", "error"); localStorage.removeItem(SESSION_KEY); localStorage.removeItem(TOKEN_KEY); setTimeout(() => location.reload(), 1800); }
           throw new Error(data.error || "Save failed");
         }
-
-        showToast("Settings saved!", "success");
+        showToast("User settings saved!", "success");
         btn.textContent = "✓ Saved";
-        setTimeout(() => {
-          btn.disabled    = false;
-          btn.textContent = "Save Settings";
-        }, 2000);
-
+        setTimeout(() => { btn.disabled = false; btn.textContent = "Save User Settings"; }, 2000);
+        // Update overview tiles
+        document.getElementById("stat-limit").textContent  = maxFiles;
+        document.getElementById("stat-expiry").textContent = expireDays + "d";
       } catch (e) {
         showToast("Save failed: " + e.message, "error");
-        btn.disabled    = false;
-        btn.textContent = "Save Settings";
+        btn.disabled = false; btn.textContent = "Save User Settings";
       }
     });
 
@@ -782,43 +609,11 @@
         const dir   = parseInt(btn.dataset.dir);
         const min   = parseInt(input.min) || 1;
         const max   = parseInt(input.max) || 9999;
-        const val   = Math.min(max, Math.max(min, (parseInt(input.value) || 0) + dir));
-        input.value = val;
+        input.value = Math.min(max, Math.max(min, (parseInt(input.value) || 0) + dir));
       });
     });
 
     // ── Stats ──
-    async function loadStats() {
-      try {
-        const padsRef = ref(db, "pads");
-        onValue(padsRef, snap => {
-          if (!snap.exists()) { setStats(0, 0, 0, 0); return; }
-
-          const pads = snap.val();
-          let padCount   = Object.keys(pads).length;
-          let fileCount  = 0;
-          let noteCount  = 0;
-          let totalBytes = 0;
-
-          for (const pad of Object.values(pads)) {
-            if (pad.files) {
-              for (const f of Object.values(pad.files)) {
-                fileCount++;
-                totalBytes += (f.size || 0);
-              }
-            }
-            if (pad.notepad?.content?.trim()) noteCount++;
-          }
-
-          setStats(padCount, fileCount, noteCount, totalBytes);
-          document.getElementById("stat-limit").textContent =
-            document.getElementById("file-limit").value;
-          document.getElementById("stat-expiry").textContent =
-            document.getElementById("file-expiry").value + "d";
-        });
-      } catch (e) { console.error(e); }
-    }
-
     function fmtBytes(bytes) {
       if (!bytes) return "0 B";
       if (bytes < 1024)       return bytes + " B";
@@ -827,11 +622,45 @@
       return (bytes / 1073741824).toFixed(2) + " GB";
     }
 
-    function setStats(pads, files, notes, bytes) {
-      document.getElementById("stat-pads").textContent    = pads;
-      document.getElementById("stat-files").textContent   = files;
-      document.getElementById("stat-notes").textContent   = notes;
-      document.getElementById("stat-storage").textContent = fmtBytes(bytes);
+    function loadStats() {
+      onValue(ref(db, "pads"), snap => {
+        if (!snap.exists()) {
+          ["stat-pads","stat-files","stat-notes","stat-storage",
+           "stat-admin-files","stat-admin-storage","stat-readonly-pads","stat-total-pads-admin"]
+            .forEach(id => document.getElementById(id).textContent = "0");
+          return;
+        }
+        const pads = snap.val();
+        let padCount      = Object.keys(pads).length;
+        let userFiles     = 0, userBytes   = 0;
+        let adminFiles    = 0, adminBytes  = 0;
+        let noteCount     = 0, readOnly    = 0;
+
+        for (const pad of Object.values(pads)) {
+          if (pad.files) {
+            for (const f of Object.values(pad.files)) {
+              if (f.byAdmin) { adminFiles++; adminBytes += (f.size || 0); }
+              else           { userFiles++;  userBytes  += (f.size || 0); }
+            }
+          }
+          if (pad.notepad?.content?.trim()) noteCount++;
+          if (pad.settings?.readOnly)       readOnly++;
+        }
+
+        // Normal overview
+        document.getElementById("stat-pads").textContent    = padCount;
+        document.getElementById("stat-files").textContent   = userFiles;
+        document.getElementById("stat-notes").textContent   = noteCount;
+        document.getElementById("stat-storage").textContent = fmtBytes(userBytes);
+        document.getElementById("stat-limit").textContent   = document.getElementById("file-limit").value || "—";
+        document.getElementById("stat-expiry").textContent  = (document.getElementById("file-expiry").value || "—") + "d";
+
+        // Admin overview
+        document.getElementById("stat-admin-files").textContent   = adminFiles;
+        document.getElementById("stat-admin-storage").textContent = fmtBytes(adminBytes);
+        document.getElementById("stat-readonly-pads").textContent = readOnly;
+        document.getElementById("stat-total-pads-admin").textContent = padCount;
+      });
     }
 
     // ── Confirm dialog ──
@@ -847,44 +676,23 @@
       confirmDialog.classList.add("show");
     }
 
-    document.getElementById("confirm-cancel").addEventListener("click", () => {
-      confirmDialog.classList.remove("show");
-      confirmCallback = null;
-    });
+    document.getElementById("confirm-cancel").addEventListener("click", () => { confirmDialog.classList.remove("show"); confirmCallback = null; });
+    document.getElementById("confirm-ok").addEventListener("click", async () => { confirmDialog.classList.remove("show"); if (confirmCallback) await confirmCallback(); confirmCallback = null; });
+    confirmDialog.addEventListener("click", e => { if (e.target === confirmDialog) { confirmDialog.classList.remove("show"); confirmCallback = null; } });
 
-    document.getElementById("confirm-ok").addEventListener("click", async () => {
-      confirmDialog.classList.remove("show");
-      if (confirmCallback) await confirmCallback();
-      confirmCallback = null;
-    });
-
-    confirmDialog.addEventListener("click", e => {
-      if (e.target === confirmDialog) {
-        confirmDialog.classList.remove("show");
-        confirmCallback = null;
-      }
-    });
-
-    // ── Delete All Files ──
+    // ── Delete All User Files ──
     document.getElementById("del-all-files-btn").addEventListener("click", () => {
       openConfirm({
-        icon: "🗑️",
-        title: "Delete All Files?",
-        desc: "This will remove all uploaded file records from every pad in Firebase. This action is permanent and cannot be undone.",
-        btnLabel: "Delete All Files",
+        icon:"🗑️", title:"Delete All User Files?",
+        desc:"Removes all uploaded file records from every pad in Firebase. Cloudinary data is not affected.",
+        btnLabel:"Delete All Files",
         onConfirm: async () => {
           try {
             const snap = await get(ref(db, "pads"));
             if (!snap.exists()) { showToast("No pads found", "info"); return; }
-            const ops = [];
-            for (const padId of Object.keys(snap.val())) {
-              ops.push(remove(ref(db, `pads/${padId}/files`)));
-            }
-            await Promise.all(ops);
-            showToast("All files deleted!", "success");
-          } catch (e) {
-            showToast("Failed: " + e.message, "error");
-          }
+            await Promise.all(Object.keys(snap.val()).map(id => remove(ref(db, `pads/${id}/files`))));
+            showToast("All user files deleted!", "success");
+          } catch (e) { showToast("Failed: " + e.message, "error"); }
         }
       });
     });
@@ -892,23 +700,63 @@
     // ── Delete All Notes ──
     document.getElementById("del-all-notes-btn").addEventListener("click", () => {
       openConfirm({
-        icon: "📝",
-        title: "Delete All Notes?",
-        desc: "This will permanently wipe the notepad content of every pad. Writers will lose all their text.",
-        btnLabel: "Delete All Notes",
+        icon:"📝", title:"Delete All Notes?",
+        desc:"Permanently wipes the notepad content of every pad. This cannot be undone.",
+        btnLabel:"Delete All Notes",
+        onConfirm: async () => {
+          try {
+            const snap = await get(ref(db, "pads"));
+            if (!snap.exists()) { showToast("No pads found", "info"); return; }
+            await Promise.all(Object.keys(snap.val()).map(id => remove(ref(db, `pads/${id}/notepad`))));
+            showToast("All notes deleted!", "success");
+          } catch (e) { showToast("Failed: " + e.message, "error"); }
+        }
+      });
+    });
+
+    // ── Delete All Admin Files ──
+    document.getElementById("del-admin-files-btn").addEventListener("click", () => {
+      openConfirm({
+        icon:"🗑️", title:"Delete All Admin Files?",
+        desc:"Removes all files marked as byAdmin from every pad in Firebase.",
+        btnLabel:"Delete Admin Files",
         onConfirm: async () => {
           try {
             const snap = await get(ref(db, "pads"));
             if (!snap.exists()) { showToast("No pads found", "info"); return; }
             const ops = [];
-            for (const padId of Object.keys(snap.val())) {
-              ops.push(remove(ref(db, `pads/${padId}/notepad`)));
+            for (const [padId, pad] of Object.entries(snap.val())) {
+              if (!pad.files) continue;
+              for (const [fid, f] of Object.entries(pad.files)) {
+                if (f.byAdmin) ops.push(remove(ref(db, `pads/${padId}/files/${fid}`)));
+              }
             }
+            if (!ops.length) { showToast("No admin files found", "info"); return; }
             await Promise.all(ops);
-            showToast("All notes deleted!", "success");
-          } catch (e) {
-            showToast("Failed: " + e.message, "error");
-          }
+            showToast(`Deleted ${ops.length} admin file(s)!`, "success");
+          } catch (e) { showToast("Failed: " + e.message, "error"); }
+        }
+      });
+    });
+
+    // ── Delete All Admin Notes ──
+    document.getElementById("del-admin-notes-btn").addEventListener("click", () => {
+      openConfirm({
+        icon:"📝", title:"Delete All Admin Notes?",
+        desc:"Removes notepad content from pads where the note was saved by admin (byAdmin flag).",
+        btnLabel:"Delete Admin Notes",
+        onConfirm: async () => {
+          try {
+            const snap = await get(ref(db, "pads"));
+            if (!snap.exists()) { showToast("No pads found", "info"); return; }
+            const ops = [];
+            for (const [padId, pad] of Object.entries(snap.val())) {
+              if (pad.notepad?.byAdmin) ops.push(remove(ref(db, `pads/${padId}/notepad`)));
+            }
+            if (!ops.length) { showToast("No admin notes found", "info"); return; }
+            await Promise.all(ops);
+            showToast(`Deleted ${ops.length} admin note(s)!`, "success");
+          } catch (e) { showToast("Failed: " + e.message, "error"); }
         }
       });
     });
@@ -916,17 +764,32 @@
     // ── Wipe Everything ──
     document.getElementById("del-all-btn").addEventListener("click", () => {
       openConfirm({
-        icon: "💥",
-        title: "Wipe ALL Data?",
-        desc: "This deletes every pad, note, and file record. Total reset. There is no going back.",
-        btnLabel: "Wipe Everything",
+        icon:"💥", title:"Wipe ALL Data?",
+        desc:"Deletes every pad, note, file record and setting. Total factory reset. There is absolutely no going back.",
+        btnLabel:"Wipe Everything",
         onConfirm: async () => {
           try {
             await remove(ref(db, "pads"));
             showToast("All data wiped.", "success");
-          } catch (e) {
-            showToast("Failed: " + e.message, "error");
-          }
+          } catch (e) { showToast("Failed: " + e.message, "error"); }
+        }
+      });
+    });
+
+    // ── Reset Admin Settings ──
+    document.getElementById("del-admin-settings-btn").addEventListener("click", () => {
+      openConfirm({
+        icon:"🔧", title:"Reset Admin Settings?",
+        desc:"This will delete the admin/settings node in Firebase, reverting all limits to their defaults.",
+        btnLabel:"Reset Settings",
+        onConfirm: async () => {
+          try {
+            await remove(ref(db, "admin/settings"));
+            document.getElementById("file-limit").value  = "9999";
+            document.getElementById("file-size").value   = "9999";
+            document.getElementById("file-expiry").value = "9999";
+            showToast("Settings reset to defaults.", "success");
+          } catch (e) { showToast("Failed: " + e.message, "error"); }
         }
       });
     });
