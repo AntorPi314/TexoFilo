@@ -929,6 +929,26 @@ onValue(filesRef, async snap => {
   renderFileList();
 });
 
+// Force-download a file via blob fetch (bypasses cross-origin download block)
+window.forceDownload = async function forceDownload(url, filename) {
+  try {
+    showToast("Downloading…");
+    const res  = await fetch(url);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const blob = await res.blob();
+    const burl = URL.createObjectURL(blob);
+    const a    = document.createElement("a");
+    a.href     = burl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { URL.revokeObjectURL(burl); a.remove(); }, 2000);
+  } catch (e) {
+    window.open(url, "_blank", "noopener,noreferrer");
+    showToast("Could not download directly — opened in new tab", "info");
+  }
+}
+
 function renderFileList() {
   const entries = Object.entries(currentFiles).sort((a, b) => b[1].uploadedAt - a[1].uploadedAt);
   const count   = entries.length;
@@ -987,7 +1007,7 @@ function renderFileList() {
         </div>
         <div class="fc-actions">
           ${viewBtn}
-          <a href="${sanitize(f.url)}" download="${sanitize(f.name)}" class="btn btn-sm btn-ghost">↓</a>
+          <button class="btn btn-sm btn-ghost" onclick="forceDownload('${sanitize(f.url)}', '${sanitize(f.name)}')">↓</button>
           ${deleteBtn}
         </div>
       </div>`;
@@ -1195,7 +1215,7 @@ function openImageDialog(file) {
       <div class="dialog-footer">
         <span style="font-size:12px;color:var(--muted);">Click image to zoom</span>
         <div style="flex:1;"></div>
-        <a href="${sanitize(file.url)}" download="${sanitize(file.name)}" class="btn btn-ghost btn-sm">↓ Download</a>
+        <button class="btn btn-ghost btn-sm" onclick="forceDownload('${sanitize(file.url)}', '${sanitize(file.name)}')">↓ Download</button>
         <button class="btn btn-primary btn-sm" id="dialog-close-btn">Close</button>
       </div>
     </div>`;
@@ -1241,7 +1261,7 @@ async function openTextDialog(file) {
       <div class="dialog-footer">
         <button id="btn-copy-text" class="btn btn-ghost btn-sm">Copy Text</button>
         <div style="flex:1;"></div>
-        <a href="${sanitize(file.url)}" download="${sanitize(file.name)}" class="btn btn-ghost btn-sm">↓ Download</a>
+        <button class="btn btn-ghost btn-sm" onclick="forceDownload('${sanitize(file.url)}', '${sanitize(file.name)}')">↓ Download</button>
         <button class="btn btn-primary btn-sm" id="dialog-close-btn">Close</button>
       </div>
     </div>`;
