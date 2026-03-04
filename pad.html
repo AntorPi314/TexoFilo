@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Texofilo</title>
+  <meta name="theme-color" content="#FFFFFF" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2318181B'/%3E%3Ctext x='5' y='22' font-family='Georgia,serif' font-weight='900' font-size='16' fill='%23FFFFFF'%3ETx%3C/text%3E%3Ccircle cx='27' cy='9' r='3.5' fill='%235548E0'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/shared.css" />
+  <link rel="stylesheet" href="css/pad.css" />
+</head>
+<body>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" role="status" aria-live="polite">
+    <div class="loading-logo">Texofilo</div>
+    <div class="loading-spinner"></div>
+  </div>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="header-top">
+      <a href="index.html" class="logo-link">Tx<span>·</span></a>
+      <div class="divider-v" aria-hidden="true"></div>
+
+      <!-- Path Nav -->
+      <div class="path-nav" id="path-nav">
+        <div class="path-chip">
+          <span class="path-chip-pre">/ </span>
+          <span class="path-chip-val" id="path-label">—</span>
+        </div>
+        <button class="path-go-btn" id="path-go-btn" title="Go to another pad">
+          <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 6h10M7 2l4 4-4 4"/></svg>
+          Go
+        </button>
+
+        <!-- Popup -->
+        <div class="path-popup" id="path-popup" role="dialog" aria-label="Navigate to pad">
+          <div class="path-popup-header">Open a pad</div>
+          <div class="path-input-row">
+            <input
+              class="path-popup-input"
+              id="path-popup-input"
+              type="text"
+              placeholder="enter-path-name"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="none"
+              spellcheck="false"
+              maxlength="64"
+            />
+            <button class="path-popup-go" id="path-popup-go-btn">Go →</button>
+          </div>
+          <div class="path-history" id="path-history"></div>
+        </div>
+      </div>
+
+      <div class="header-spacer"></div>
+
+      <div class="save-indicator" title="Save status" aria-live="polite">
+        <div class="save-dot" id="save-dot"></div>
+        <span class="save-label" id="save-label">—</span>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <nav class="tabs-bar" aria-label="Pad sections">
+      <button class="tab-btn active" data-tab="notepad" aria-selected="true">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M2 2h12v1H2zm0 3h12v1H2zm0 3h8v1H2zm0 3h6v1H2z"/></svg>
+        Notepad
+      </button>
+      <button class="tab-btn" data-tab="files" aria-selected="false">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M2 2h6l2 2h4v10H2zm0 0"/></svg>
+        File Share
+        <span class="badge" id="file-count" aria-label="files uploaded">0</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Panels -->
+  <div class="panels-wrap">
+
+    <!-- ── Notepad Panel ── -->
+    <div class="panel active" id="panel-notepad" role="main">
+      <div class="notepad-container">
+        <!-- Line gutter -->
+        <div class="gutter" aria-hidden="true">
+          <div id="gutter-inner"></div>
+        </div>
+        <!-- Editor -->
+        <textarea
+          id="notepad"
+          placeholder="Start typing… your text auto-saves as you type.
+
+Anyone with this URL can read and edit.
+No login required.
+
+Tip: use a secret path to keep your notes private."
+          aria-label="Notepad editor"
+          spellcheck="true"
+        ></textarea>
+      </div>
+
+      <!-- Footer bar -->
+      <div class="notepad-bar">
+        <span class="notepad-stats" id="note-stats" aria-live="polite">0 chars · 0 lines · 0 words</span>
+        <div class="notepad-actions">
+          <button class="btn btn-ghost btn-sm" id="btn-copy-all" title="Copy all text">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2h8v10H4zm0 0M2 4h1v9h7v1H2z"/></svg>
+            Copy
+          </button>
+          <button class="btn btn-ghost btn-sm" id="btn-clear" title="Clear notepad">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M12 4l-1-1H5L4 4H2v1h12V4zm-1 2H5l.5 7h5z"/></svg>
+            Clear
+          </button>
+          <button class="btn btn-ghost btn-sm" id="btn-download-txt" title="Download as .txt">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 11l-4-4h2.5V3h3v4H12zm-5 2h10v1H3z"/></svg>
+            .txt
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── File Share Panel ── -->
+    <div class="panel" id="panel-files">
+      <div class="files-panel-inner">
+
+        <!-- Info header -->
+        <div>
+          <h2 style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px;">File Share</h2>
+          <p style="font-size:13px;color:var(--muted);">Up to 5 files · Each file auto-deletes 30 days after upload</p>
+        </div>
+
+        <!-- Banners -->
+        <div class="banner banner-warn" id="limit-banner" role="alert">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1L1 14h14zm0 4v4H7V5zm0 5v2H7v-2z"/></svg>
+          Maximum 5 files reached. Delete a file to upload a new one.
+        </div>
+        <div class="banner banner-err" id="err-banner" role="alert"></div>
+
+        <!-- Upload Zone -->
+        <div class="upload-zone" id="upload-zone" role="button" tabindex="0" aria-label="Upload file">
+          <input type="file" id="file-input" aria-hidden="true" tabindex="-1" />
+          <div class="uz-icon-wrap" aria-hidden="true">📁</div>
+          <div class="uz-title">Drop a file here</div>
+          <div class="uz-desc">or click to browse · images, videos, documents, any file</div>
+        </div>
+
+        <!-- Upload Progress -->
+        <div class="upload-prog-bar" id="upload-prog-bar" role="status" aria-live="polite">
+          <div class="prog-labels">
+            <span class="prog-filename" id="prog-filename">Uploading…</span>
+            <span class="prog-pct" id="prog-pct">0%</span>
+          </div>
+          <div class="prog-track">
+            <div class="prog-fill" id="prog-fill"></div>
+          </div>
+        </div>
+
+        <!-- File List -->
+        <div class="file-list" id="file-list" aria-live="polite"></div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" role="status" aria-live="polite" aria-atomic="false"></div>
+
+  <script type="module" src="js/pad.js"></script>
+</body>
+</html>

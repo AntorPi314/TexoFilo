@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Texofilo — Share text &amp; files</title>
+  <meta name="description" content="The simplest way to share text and files online. No login required." />
+  <meta name="theme-color" content="#F3F1EC" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2318181B'/%3E%3Ctext x='5' y='22' font-family='Georgia,serif' font-weight='900' font-size='16' fill='%23FFFFFF'%3ETx%3C/text%3E%3Ccircle cx='27' cy='9' r='3.5' fill='%235548E0'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/shared.css" />
+  <link rel="stylesheet" href="css/index.css" />
+</head>
+<body>
+
+  <!-- Background blobs -->
+  <div class="bg-blobs" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <main>
+    <!-- Masthead -->
+    <header class="site-header">
+      <div class="logo-mark">
+        <span class="logo-text">Texofilo</span>
+        <div class="logo-dot"></div>
+      </div>
+      <p class="site-tagline">Share text &amp; files — no login, no hassle</p>
+    </header>
+
+    <!-- Search Form -->
+    <div class="search-form-wrap">
+      <label class="search-label" for="path-input">Pick your page name</label>
+      <div class="search-row">
+        <div class="search-prefix" aria-hidden="true">texofilo.com&thinsp;/</div>
+        <input
+          type="text"
+          id="path-input"
+          class="search-input"
+          placeholder="my-secret-notes"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="none"
+          spellcheck="false"
+          maxlength="64"
+        />
+        <button class="search-btn" id="go-btn" aria-label="Go to pad">Go →</button>
+      </div>
+      <p class="search-hint">
+        Press <kbd>Enter</kbd> or click <strong>Go</strong> to open your pad
+      </p>
+    </div>
+
+    <!-- Features -->
+    <div class="features-row" aria-label="Features">
+      <div class="feat-card">
+        <div class="feat-emoji">📝</div>
+        <div class="feat-name">Notepad</div>
+        <div class="feat-desc">Auto-saves as you type. Real-time collaboration.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-emoji">📂</div>
+        <div class="feat-name">File Share</div>
+        <div class="feat-desc">Up to 5 files. Deleted after 30 days.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-emoji">🔗</div>
+        <div class="feat-name">Secret URLs</div>
+        <div class="feat-desc">Only people with your link can access.</div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <span>© 2025 Texofilo</span>
+    <a href="#">Privacy</a>
+    <a href="#">About</a>
+  </footer>
+
+  <div id="toast"></div>
+
+  <script type="module" src="js/index.js"></script>
+</body>
+</html>
