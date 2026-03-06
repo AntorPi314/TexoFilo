@@ -64,6 +64,8 @@ Generate a QR code for any pad to share the link instantly offline.
 
 ![Screenshot](https://raw.githubusercontent.com/AntorPi314/TexoFilo/main/img/3.png)
 
+![Screenshot](https://raw.githubusercontent.com/AntorPi314/TexoFilo/main/img/4.png)
+
 ---
 
 # Getting Started
