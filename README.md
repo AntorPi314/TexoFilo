@@ -64,6 +64,8 @@ Generate a QR code for any pad to share the link instantly offline.
 
 ![Screenshot](https://raw.githubusercontent.com/AntorPi314/TexoFilo/main/img/3.png)
 
+![Screenshot](https://raw.githubusercontent.com/AntorPi314/TexoFilo/main/img/4.png)
+
 ---
 
 # Getting Started
@@ -139,8 +141,6 @@ export const WORKER_URL = "https://your-worker.your-subdomain.workers.dev/";
 
 ---
 
-# License
+## License
 
-This project is licensed under the **MIT License**.
-
-See the LICENSE file for details.
+This project is licensed under the **[MIT License](LICENSE.txt)**.
