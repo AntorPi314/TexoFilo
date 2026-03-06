@@ -498,18 +498,9 @@ body {
   cursor: default;
 }
 
-.presence-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #22C55E;
-  animation: presencePulse 2s ease-in-out infinite;
+.presence-eye {
   flex-shrink: 0;
-}
-
-@keyframes presencePulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.6; transform: scale(0.85); }
+  opacity: 0.85;
 }
 
 .notepad-actions {

@@ -1609,7 +1609,13 @@ document.getElementById("btn-add-gallery-link")?.addEventListener("click", () =>
 // ─────────────────────
 (async () => {
   try {
-    const sessionId   = Math.random().toString(36).slice(2, 10);
+    // Per-browser, per-pad session ID — persists across reloads so one browser = one view
+    const storageKey = `txf_sid_${padPath}`;
+    let sessionId = localStorage.getItem(storageKey);
+    if (!sessionId) {
+      sessionId = Math.random().toString(36).slice(2, 10);
+      localStorage.setItem(storageKey, sessionId);
+    }
     const viewLogRef  = ref(db, `pads/${padPath}/viewLog/${sessionId}`);
     const allLogsRef  = ref(db, `pads/${padPath}/viewLog`);
     const statsRef    = ref(db, `pads/${padPath}/stats`);
