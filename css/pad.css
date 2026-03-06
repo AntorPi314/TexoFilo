@@ -106,6 +106,7 @@ body {
   border-radius: var(--radius-sm);
   padding: 4px 10px;
   min-width: 0;
+  max-width: 100%;
   overflow: hidden;
   cursor: default;
 }
@@ -839,10 +840,11 @@ body.readonly-mode #notepad {
   .logo-link { font-size: 16px; }
   .gutter { display: none; }
   #notepad { padding: 12px 14px; font-size: 13px; }
-  .notepad-bar { padding: 5px 10px; gap: 6px; flex-wrap: wrap; }
-  .notepad-stats-group { gap: 4px; }
-  .notepad-actions { gap: 4px; }
+  .notepad-bar { padding: 5px 10px; gap: 6px; flex-wrap: nowrap; }
+  .notepad-stats-group { gap: 4px; min-width: 0; }
+  .notepad-actions { gap: 4px; flex-shrink: 0; }
   .notepad-actions .btn { padding: 5px 9px; font-size: 12px; }
+  .notepad-actions .btn-label { display: none; }
   .files-panel-inner { padding: 12px; gap: 10px; }
   .upload-zone .uz-body { padding: 22px 14px 18px; }
   .uz-chips { display: none; }
@@ -873,9 +875,8 @@ body.readonly-mode #notepad {
 
 @media (max-width: 420px) {
   .logo-link { font-size: 15px; }
-  .path-chip { max-width: 110px; }
+  .path-chip { max-width: 90px; }
   .header-top { gap: 4px; }
-  .notepad-actions .btn span { display: none; } /* icon-only */
   .tab-btn { padding: 8px 8px; font-size: 11px; }
 
   /* On very small screens, hide save dot text */

@@ -122,7 +122,7 @@
     <div class="panel active" id="panel-notepad" role="main">
       <!-- Read Only banner -->
       <div id="readonly-banner" style="display:none; background:var(--amber-lt); border-bottom:1px solid #FDE68A; padding:9px 16px; font-size:12.5px; font-weight:600; color:#92400E; text-align:center; flex-shrink:0; letter-spacing:0.01em;">
-        🔒 This pad is in <strong>Read Only</strong> mode — viewing and downloading is allowed, editing is disabled.
+        🔒 This pad is in <strong>Read Only</strong> mode.
       </div>
       <div class="notepad-container" id="notepad-container">
         <!-- Line gutter -->
@@ -159,11 +159,11 @@
         <div class="notepad-actions">
           <button class="btn btn-ghost btn-sm" id="btn-copy-all" title="Copy all text">
             <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2h8v10H4zm0 0M2 4h1v9h7v1H2z"/></svg>
-            Copy
+            <span class="btn-label">Copy</span>
           </button>
           <button class="btn btn-ghost btn-sm" id="btn-download-txt" title="Download as .txt">
             <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 11l-4-4h2.5V3h3v4H12zm-5 2h10v1H3z"/></svg>
-            .txt
+            <span class="btn-label">.txt</span>
           </button>
         </div>
       </div>
@@ -199,12 +199,6 @@
             <div class="uz-text-wrap">
               <div class="uz-title">Drop files here to upload</div>
               <div class="uz-desc">or <span class="uz-browse-link">click to browse</span> — images, videos, documents &amp; more</div>
-            </div>
-            <div class="uz-chips" aria-hidden="true">
-              <span class="uz-chip">📷 Images</span>
-              <span class="uz-chip">🎬 Videos</span>
-              <span class="uz-chip">📄 Docs</span>
-              <span class="uz-chip">📦 Any file</span>
             </div>
           </div>
         </div>
