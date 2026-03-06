@@ -141,6 +141,6 @@ export const WORKER_URL = "https://your-worker.your-subdomain.workers.dev/";
 
 ---
 
-# License
+## License
 
-This project is licensed under the **MIT License**.
+This project is licensed under the **[MIT License](LICENSE.txt)**.
