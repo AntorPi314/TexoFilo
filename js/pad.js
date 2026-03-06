@@ -5,18 +5,18 @@
 // ─────────────────────────────────────────
 
 import {
-  db, auth, WORKER_URL, THIRTY_DAYS, MAX_FILES,
+  db, auth, WORKER_URL,
   fmtSize, daysLeft, getFileIcon, isImageFile, isTextFile,
   sanitize, showToast
 } from "./config.js";
 
 import {
-  ref, set, get, onValue, push, remove, onDisconnect, serverTimestamp
+  ref, set, get, onValue, push, remove
 } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
 
 import {
   onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
-  signInWithPopup, GoogleAuthProvider, signOut, updateProfile
+  signInWithPopup, GoogleAuthProvider, signOut
 } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
 
 // ─────────────────────
@@ -623,8 +623,7 @@ function settingRow(label, value, hint) {
 }
 
 // Update owner UI whenever readOnly changes too
-const _origApply = applyReadOnlyMode;
-// (already called inside onValue, updateOwnerUI will be called in next tick)
+// (readOnly changes call updateOwnerUI via applyReadOnlyMode → renderFileList chain)
 
 // ─────────────────────
 //  Link Copy + QR Code
@@ -822,8 +821,13 @@ function doSave() {
     return;
   }
   set(noteRef, { content: val, updatedAt: Date.now() })
-    .then(setSaved)
+    .then(() => { setSaved(); recordActivity(); })
     .catch(setSaveError);
+}
+
+// ── Record last activity timestamp (resets view counter) ──
+function recordActivity() {
+  set(ref(db, `pads/${padPath}/stats/lastActivityAt`), Date.now()).catch(() => {});
 }
 
 // Intercept paste — strip HTML, only plain text
@@ -888,16 +892,6 @@ document.getElementById("btn-copy-all")?.addEventListener("click", async () => {
   }
 });
 
-document.getElementById("btn-clear")?.addEventListener("click", () => {
-  if (!getNoteValue().trim()) return;
-  if (!confirm("Clear all text in this notepad?")) return;
-  notepad.innerHTML = "";
-  doSave();
-  updateStats();
-  updateGutter();
-  showToast("Cleared");
-});
-
 document.getElementById("btn-download-txt")?.addEventListener("click", () => {
   const blob = new Blob([getNoteValue()], { type: "text/plain;charset=utf-8" });
   const a = document.createElement("a");
@@ -958,11 +952,14 @@ function renderFileList() {
   fileCountBadge.textContent = count;
 
   if (!restrict) {
-    limitBanner.classList.toggle("show", !isAdmin && count >= maxFiles);
-    uploadZone.classList.toggle("disabled", !isAdmin && count >= maxFiles);
+    const atLimit = !isAdmin && count >= maxFiles;
+    limitBanner.classList.toggle("show", atLimit);
+    uploadZone.classList.toggle("disabled", atLimit);
+    fileInputEl.disabled = atLimit;
   } else {
     limitBanner.classList.remove("show");
     uploadZone.classList.add("disabled");
+    fileInputEl.disabled = true;
   }
 
   if (count === 0) {
@@ -1063,7 +1060,11 @@ window.viewFile = (id) => {
 // ─────────────────────
 //  File Upload
 // ─────────────────────
+// Tracks concurrent uploads so progress bar doesn't hide prematurely
+let _uploadActive = 0;
+
 async function uploadFile(file) {
+  _uploadActive++;
   claimPadOwnership();
   const maxFiles  = effectiveSetting("maxFiles", 9999);
   const maxSizeMB = effectiveSetting("maxFileSizeMB", 9999);
@@ -1125,16 +1126,25 @@ async function uploadFile(file) {
     });
 
     showToast(`"${file.name}" uploaded!`, "success");
+    recordActivity();
 
   } catch (err) {
     clearInterval(ticker);
     showErrBanner("Upload failed: " + err.message);
     showToast("Upload failed", "error");
   } finally {
-    setTimeout(() => {
-      progBar.classList.remove("show");
-      progFill.style.width = "0%";
-    }, 700);
+    // Only hide progress bar if no other upload will immediately follow
+    // The caller (multi-file loop) manages final hide via uploadQueue
+    _uploadActive--;
+    if (_uploadActive <= 0) {
+      _uploadActive = 0;
+      setTimeout(() => {
+        if (_uploadActive === 0) {
+          progBar.classList.remove("show");
+          progFill.style.width = "0%";
+        }
+      }, 700);
+    }
     fileInputEl.value = "";
   }
 }
@@ -1182,13 +1192,20 @@ document.addEventListener("drop", e => {
   const filesTab = document.querySelector('.tab-btn[data-tab="files"]');
   if (filesTab && !filesTab.classList.contains("active")) filesTab.click();
 
-  const f = e.dataTransfer.files[0];
-  if (f) uploadFile(f);
+  const files = Array.from(e.dataTransfer.files);
+  if (files.length) {
+    (async () => { for (const f of files) await uploadFile(f); })();
+  }
 });
 
-// Keep old upload zone click and change behavior
-uploadZone.addEventListener("click", () => { if (!uploadZone.classList.contains("disabled")) fileInputEl.click(); });
-fileInputEl.addEventListener("change", () => { if (fileInputEl.files[0]) uploadFile(fileInputEl.files[0]); });
+// Upload zone — file input covers the zone, click fires natively
+// Keep change handler for multiple files
+fileInputEl.addEventListener("change", async () => {
+  const files = Array.from(fileInputEl.files || []);
+  if (!files.length) return;
+  for (const f of files) await uploadFile(f);
+  fileInputEl.value = "";
+});
 
 // ─────────────────────
 //  DIALOG — Image Viewer
@@ -1565,12 +1582,14 @@ document.getElementById("btn-add-gallery-link")?.addEventListener("click", () =>
     if (!url) return;
     addBtn.disabled = true; addBtn.textContent = "Adding…";
     try {
-      await set(ref(db, `pads/${padPath}/gallery/${Date.now()}`), {
+      const newGalleryRef = push(ref(db, `pads/${padPath}/gallery`));
+      await set(newGalleryRef, {
         url,
         type   : detectMediaType(url),
         addedAt: Date.now(),
       });
       showToast("Added to gallery!", "success");
+      recordActivity();
       closeDialog(dlg);
     } catch (e) {
       showToast("Failed: " + e.message, "error");
@@ -1586,86 +1605,97 @@ document.getElementById("btn-add-gallery-link")?.addEventListener("click", () =>
 });
 
 // ─────────────────────
-//  PRESENCE — who's viewing this pad
+//  VIEW COUNT — viewers since last edit/upload/gallery add
 // ─────────────────────
 (async () => {
   try {
-    // Generate a unique session ID for this visitor
-    const sessionId = Math.random().toString(36).slice(2, 10);
-    const presencePath = `pads/${padPath}/presence/${sessionId}`;
-    const presRef = ref(db, presencePath);
+    const sessionId   = Math.random().toString(36).slice(2, 10);
+    const viewLogRef  = ref(db, `pads/${padPath}/viewLog/${sessionId}`);
+    const allLogsRef  = ref(db, `pads/${padPath}/viewLog`);
+    const statsRef    = ref(db, `pads/${padPath}/stats`);
 
-    // Write presence on connect, remove on disconnect
-    await set(presRef, { t: Date.now(), admin: isAdmin || null });
-    onDisconnect(presRef).remove();
+    // Write this visit
+    const writeView = () => set(viewLogRef, { at: Date.now() }).catch(() => {});
+    writeView();
+    // Refresh every 90s so active viewers stay counted after activity
+    setInterval(writeView, 90_000);
 
-    // Refresh own presence every 30s to show still alive
-    setInterval(() => set(presRef, { t: Date.now(), admin: isAdmin || null }), 30000);
+    let _lastActivityAt = 0;
+    let _logSnap = null;
 
-    // Watch all presence entries, count those active in last 2 mins
-    const allPresRef = ref(db, `pads/${padPath}/presence`);
-    onValue(allPresRef, snap => {
-      if (!snap.exists()) { updatePresenceUI(1); return; }
-      const now = Date.now();
-      const TWO_MIN = 2 * 60 * 1000;
+    function recount() {
+      if (!_logSnap) { updateViewCountUI(0); return; }
       let count = 0;
-      snap.forEach(child => {
-        const d = child.val();
-        if (d?.t && (now - d.t) < TWO_MIN) count++;
+      _logSnap.forEach(child => {
+        const at = child.val()?.at || 0;
+        if (at >= _lastActivityAt) count++;
       });
-      updatePresenceUI(Math.max(count, 1));
+      updateViewCountUI(count);
+    }
+
+    onValue(statsRef, snap => {
+      _lastActivityAt = snap.exists() ? (snap.val()?.lastActivityAt || 0) : 0;
+      recount();
     });
 
-    // Cleanup stale presence entries (older than 3 min) periodically
-    setInterval(async () => {
-      const snap = await get(allPresRef);
-      if (!snap.exists()) return;
-      const now = Date.now();
-      snap.forEach(child => {
-        if (child.val()?.t && (now - child.val().t) > 3 * 60 * 1000) {
-          remove(ref(db, `pads/${padPath}/presence/${child.key}`));
-        }
-      });
-    }, 60000);
+    onValue(allLogsRef, snap => {
+      _logSnap = snap.exists() ? snap : null;
+      recount();
+    });
+
+    // Rename statsRef2 to statsRef (cleaner) — already declared above as statsRef2
+    // Cleanup viewLog entries older than 7 days (runs once, 5s after load)
+    setTimeout(async () => {
+      try {
+        const snap   = await get(allLogsRef);
+        if (!snap.exists()) return;
+        const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
+        snap.forEach(child => {
+          if ((child.val()?.at || 0) < cutoff) {
+            remove(ref(db, `pads/${padPath}/viewLog/${child.key}`)).catch(() => {});
+          }
+        });
+      } catch (_) {}
+    }, 5000);
 
   } catch(e) {
-    // Presence is non-critical, silently fail
-    console.debug("Presence init error:", e);
+    console.debug("View count error:", e);
   }
 })();
 
-function updatePresenceUI(count) {
+function updateViewCountUI(count) {
   const pill  = document.getElementById("presence-pill");
   const label = document.getElementById("presence-count");
   if (!pill || !label) return;
   label.textContent = count;
-  pill.title = count === 1 ? "Only you are viewing" : `${count} people viewing this pad`;
-  // Highlight if multiple viewers
-  pill.style.background = count > 1 ? "rgba(22,163,74,0.15)" : "rgba(22,163,74,0.08)";
-  pill.style.borderColor = count > 1 ? "rgba(22,163,74,0.35)" : "rgba(22,163,74,0.2)";
+  const dot = pill.querySelector(".presence-dot");
+  if (count > 1) {
+    pill.title = `${count} people viewed since last edit`;
+    pill.style.background  = "rgba(85,72,224,0.12)";
+    pill.style.borderColor = "rgba(85,72,224,0.28)";
+    pill.style.color       = "var(--accent)";
+    if (dot) dot.style.background = "var(--accent)";
+  } else {
+    pill.title = count === 1 ? "1 person viewed since last edit" : "No views since last edit";
+    pill.style.background  = "rgba(22,163,74,0.08)";
+    pill.style.borderColor = "rgba(22,163,74,0.2)";
+    pill.style.color       = "#16A34A";
+    if (dot) dot.style.background = "#22C55E";
+  }
 }
 
 // ─────────────────────
 //  VIRTUAL KEYBOARD — resize editor
 // ─────────────────────
 if ("visualViewport" in window) {
-  const HEADER_H = document.querySelector(".site-header")?.offsetHeight || 54;
-  const TABS_H   = document.querySelector(".tabs-bar")?.offsetHeight    || 42;
-
-  window.visualViewport.addEventListener("resize", () => {
+  function applyVVHeight() {
+    const header = document.querySelector(".app-header");
+    const HEADER_H = header ? header.offsetHeight : 96;
     const vvh = window.visualViewport.height;
     const panelsWrap = document.querySelector(".panels-wrap");
-    if (panelsWrap) {
-      panelsWrap.style.height = (vvh - HEADER_H - TABS_H) + "px";
-    }
-  });
+    if (panelsWrap) panelsWrap.style.height = (vvh - HEADER_H) + "px";
+  }
 
-  // Reset when keyboard closes
-  window.visualViewport.addEventListener("scroll", () => {
-    const panelsWrap = document.querySelector(".panels-wrap");
-    if (panelsWrap) {
-      const vvh = window.visualViewport.height;
-      panelsWrap.style.height = (vvh - HEADER_H - TABS_H) + "px";
-    }
-  });
+  window.visualViewport.addEventListener("resize", applyVVHeight);
+  window.visualViewport.addEventListener("scroll", applyVVHeight);
 }

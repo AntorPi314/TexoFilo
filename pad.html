@@ -69,7 +69,7 @@
         <!-- Logged-out state -->
         <button id="btn-sign-in" class="btn btn-ghost btn-sm" title="Sign in to manage this pad" style="font-size:12px; gap:5px;">
           <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a3.5 3.5 0 110 7 3.5 3.5 0 010-7zm-6 11c0-2.5 2.7-4 6-4s6 1.5 6 4v1H2z"/></svg>
-          Sign In
+          <span>Sign In</span>
         </button>
         <!-- Logged-in state (hidden initially) -->
         <button id="btn-user-menu" style="display:none; cursor:pointer; border:none; background:var(--accent-lt); color:var(--accent); padding:3px 10px 3px 7px; border-radius:100px; font-size:11px; font-weight:700; letter-spacing:0.04em; border:1px solid rgba(85,72,224,0.2); align-items:center; gap:6px;">
@@ -151,19 +151,15 @@
           <span class="notepad-stats-sep">·</span>
           <span class="notepad-stats" id="note-lines">0 lines</span>
           <span class="notepad-stats-sep presence-sep">·</span>
-          <span class="presence-pill" id="presence-pill" title="People viewing this pad">
+          <span class="presence-pill" id="presence-pill" title="Views since last edit">
             <span class="presence-dot"></span>
-            <span id="presence-count">1</span>
+            <span id="presence-count">0</span>
           </span>
         </div>
         <div class="notepad-actions">
           <button class="btn btn-ghost btn-sm" id="btn-copy-all" title="Copy all text">
             <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2h8v10H4zm0 0M2 4h1v9h7v1H2z"/></svg>
             Copy
-          </button>
-          <button class="btn btn-ghost btn-sm" id="btn-clear" title="Clear notepad">
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M12 4l-1-1H5L4 4H2v1h12V4zm-1 2H5l.5 7h5z"/></svg>
-            Clear
           </button>
           <button class="btn btn-ghost btn-sm" id="btn-download-txt" title="Download as .txt">
             <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 11l-4-4h2.5V3h3v4H12zm-5 2h10v1H3z"/></svg>
@@ -180,7 +176,7 @@
         <!-- Info header -->
         <div>
           <h2 style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px;">File Share</h2>
-          <p style="font-size:13px;color:var(--muted);">Up to 5 files · Each file auto-deletes 30 days after upload</p>
+          <p style="font-size:13px;color:var(--muted);" id="files-desc">Up to 5 files · Each file auto-deletes 30 days after upload · Select multiple at once</p>
         </div>
 
         <!-- Banners -->
@@ -191,11 +187,26 @@
         <div class="banner banner-err" id="err-banner" role="alert"></div>
 
         <!-- Upload Zone -->
-        <div class="upload-zone" id="upload-zone" role="button" tabindex="0" aria-label="Upload file">
-          <input type="file" id="file-input" aria-hidden="true" tabindex="-1" />
-          <div class="uz-icon-wrap" aria-hidden="true">📁</div>
-          <div class="uz-title">Drop a file here</div>
-          <div class="uz-desc">or click to browse · images, videos, documents, any file</div>
+        <div class="upload-zone" id="upload-zone" role="button" tabindex="0" aria-label="Upload files">
+          <input type="file" id="file-input" tabindex="-1" multiple />
+          <div class="uz-body">
+            <div class="uz-icon-wrap" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <path d="M16 4L8 12h5v10h6V12h5z" fill="var(--accent)" opacity="0.85"/>
+                <path d="M6 22v4h20v-4" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+            </div>
+            <div class="uz-text-wrap">
+              <div class="uz-title">Drop files here to upload</div>
+              <div class="uz-desc">or <span class="uz-browse-link">click to browse</span> — images, videos, documents &amp; more</div>
+            </div>
+            <div class="uz-chips" aria-hidden="true">
+              <span class="uz-chip">📷 Images</span>
+              <span class="uz-chip">🎬 Videos</span>
+              <span class="uz-chip">📄 Docs</span>
+              <span class="uz-chip">📦 Any file</span>
+            </div>
+          </div>
         </div>
 
         <!-- Upload Progress -->
@@ -252,7 +263,7 @@
   </div><!-- /panels-wrap -->
   <!-- Auth Modal -->
   <div id="auth-modal" style="display:none; position:fixed; inset:0; background:rgba(24,24,27,0.5); backdrop-filter:blur(6px); z-index:5000; align-items:center; justify-content:center; padding:16px;">
-    <div style="background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius-xl); padding:32px 28px; width:100%; max-width:360px; box-shadow:var(--shadow-lg); animation:dialogIn 0.22s cubic-bezier(0.34,1.2,0.64,1) both;">
+    <div style="background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius-xl); padding:32px 28px; width:100%; max-width:360px; box-shadow:var(--shadow-lg); animation:dialogIn 0.22s cubic-bezier(0.34,1.2,0.64,1) both; position:relative;">
       <div style="text-align:center; margin-bottom:24px;">
         <div style="font-size:28px; font-family:var(--ff-brand); font-weight:900; color:var(--text); margin-bottom:4px;">Sign In</div>
         <div style="font-size:13px; color:var(--muted);">Sign in to manage and own this pad</div>
@@ -276,7 +287,7 @@
         <button id="auth-login-btn" style="flex:1;padding:11px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-family:var(--ff-ui);font-size:13.5px;font-weight:700;cursor:pointer;transition:background 0.15s;">Sign In</button>
         <button id="auth-register-btn" style="flex:1;padding:11px;background:var(--surface2);color:var(--text2);border:1.5px solid var(--border);border-radius:var(--radius);font-family:var(--ff-ui);font-size:13.5px;font-weight:600;cursor:pointer;transition:all 0.15s;">Register</button>
       </div>
-      <button id="auth-modal-close" style="position:absolute;top:12px;right:12px;width:32px;height:32px;border:none;background:none;cursor:pointer;color:var(--muted);font-size:18px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);"></button>
+      <button id="auth-modal-close" style="position:absolute;top:12px;right:12px;width:32px;height:32px;border:none;background:none;cursor:pointer;color:var(--muted);font-size:18px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);" aria-label="Close">×</button>
     </div>
   </div>
 

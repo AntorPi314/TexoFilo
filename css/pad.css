@@ -536,12 +536,25 @@ body {
   background: var(--surface);
   border: 2px dashed var(--border2);
   border-radius: var(--radius-lg);
-  padding: 32px 24px;
-  text-align: center;
+  padding: 0;
   cursor: pointer;
   transition: all var(--transition);
   position: relative;
   overflow: hidden;
+  min-height: 140px;
+  flex-shrink: 0;            /* never shrink when file list grows */
+}
+
+/* Hide the native file input — covers zone for click-to-browse */
+#file-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+  font-size: 0;
 }
 
 .upload-zone:hover, .upload-zone.over {
@@ -555,28 +568,67 @@ body {
   pointer-events: none;
 }
 
+.uz-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 32px 24px 26px;
+  pointer-events: none;
+}
+
 .uz-icon-wrap {
-  width: 56px; height: 56px;
-  border-radius: var(--radius);
+  width: 64px; height: 64px;
+  border-radius: var(--radius-lg);
   background: var(--accent-lt);
-  margin: 0 auto 12px;
+  border: 1.5px solid rgba(85,72,224,0.15);
+  margin-bottom: 2px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
-  transition: transform var(--transition);
+  transition: transform var(--transition), box-shadow var(--transition);
+  flex-shrink: 0;
 }
 
-.upload-zone:hover .uz-icon-wrap { transform: translateY(-3px); }
+.upload-zone:hover .uz-icon-wrap {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(85,72,224,0.18);
+}
+
+.uz-text-wrap { text-align: center; }
 
 .uz-title {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text);
-  margin-bottom: 4px;
+  margin-bottom: 5px;
 }
 
-.uz-desc { font-size: 12.5px; color: var(--muted); }
+.uz-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+.uz-browse-link {
+  font-weight: 600;
+  text-underline-offset: 2px;
+}
+
+.uz-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.uz-chip {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--muted);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 3px 10px;
+  white-space: nowrap;
+}
 
 /* Upload progress */
 .upload-prog-bar {
@@ -783,18 +835,51 @@ body.readonly-mode #notepad {
 
 /* ── Mobile ── */
 @media (max-width: 640px) {
-  .header-top { padding: 8px 12px; gap: 8px; }
-  .logo-link { font-size: 17px; }
+  .header-top { padding: 8px 10px; gap: 6px; }
+  .logo-link { font-size: 16px; }
   .gutter { display: none; }
-  #notepad { padding: 14px 16px; font-size: 13px; }
-  .notepad-bar { padding: 6px 12px; }
-  .files-panel-inner { padding: 14px; gap: 12px; }
-  .upload-zone { padding: 24px 16px; }
-  .path-chip { max-width: 180px; }
+  #notepad { padding: 12px 14px; font-size: 13px; }
+  .notepad-bar { padding: 5px 10px; gap: 6px; flex-wrap: wrap; }
+  .notepad-stats-group { gap: 4px; }
+  .notepad-actions { gap: 4px; }
+  .notepad-actions .btn { padding: 5px 9px; font-size: 12px; }
+  .files-panel-inner { padding: 12px; gap: 10px; }
+  .upload-zone .uz-body { padding: 22px 14px 18px; }
+  .uz-chips { display: none; }
+  .path-chip { max-width: 140px; }
   .save-indicator .save-label { display: none; }
-  .tab-btn { padding: 9px 12px; font-size: 12px; }
+  .tab-btn { padding: 8px 10px; font-size: 12px; gap: 5px; }
   .fc-actions { gap: 4px; }
-  .fc-actions .btn { padding: 6px 10px; font-size: 12px; }
+  .fc-actions .btn { padding: 5px 9px; font-size: 12px; }
+
+  /* Hide QR button on mobile — link copy is enough */
+  #btn-qr-code { display: none; }
+
+  /* Sign-in: show only icon, no text */
+  #btn-sign-in span:last-child { display: none; }
+
+  /* Shrink admin/user buttons */
+  #btn-admin-menu { padding: 3px 7px !important; font-size: 9px !important; }
+  #btn-user-menu { padding: 3px 7px 3px 5px !important; }
+  #btn-owner-readonly { display: none !important; }
+
+  /* Path go btn: icon only */
+  .path-go-btn .go-text { display: none; }
+  .path-go-btn { padding: 4px 7px; }
+
+  /* Wrap presence + sep below stats if needed */
+  .presence-sep { display: none; }
+}
+
+@media (max-width: 420px) {
+  .logo-link { font-size: 15px; }
+  .path-chip { max-width: 110px; }
+  .header-top { gap: 4px; }
+  .notepad-actions .btn span { display: none; } /* icon-only */
+  .tab-btn { padding: 8px 8px; font-size: 11px; }
+
+  /* On very small screens, hide save dot text */
+  .save-indicator { gap: 4px; }
 }
 
 @media (max-width: 400px) {
@@ -1049,7 +1134,7 @@ body.readonly-mode #notepad {
 
 /* ── Virtual keyboard fix ── */
 .panels-wrap {
-  height: calc(100dvh - var(--header-h, 54px) - var(--tabs-h, 42px));
+  height: calc(100dvh - var(--header-h, 96px));
 }
 
 /* DO NOT set display:flex here — that's handled by .panel.active */
